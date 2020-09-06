@@ -1,0 +1,36 @@
+parameters:
+  name: 'SeleniumTestability'
+  vmImage: ''
+  robotPrefix: ''
+
+jobs:
+- job: ${{ parameters.name }}
+  timeoutInMinutes: ${{ parameters.timeout }}
+  pool:
+    vmImage: ${{ parameters.vmImage }}
+  strategy:
+    matrix:
+      Python35:
+        python_version: '3.5'
+      Python36:
+        python_version: '3.6'
+      Python37:
+        python_version: '3.7'
+      Python38:
+        python_version: '3.8'
+      Python39:
+        python_version: '3.9'
+    maxParallel: 6
+
+  steps:
+  - task: UsePythonVersion@0
+    displayName: 'Python for test execution'
+    inputs:
+      versionSpec: $(python_version)
+      addToPath: true
+      architecture: 'x64'
+
+  - bash: |
+      python --version
+      python test.py
+    displayName: Run the tests
